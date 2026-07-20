@@ -12,12 +12,15 @@ public:
         int res = 0;
         for (int x = 0; x < n; x++) {
             int curr = nums[x];
-            //cout << "curr: " << curr << "\n";
             int f = curr - k;
-            //cout << "f = curr - k = " << f << "\n";
-            //cout << "freq[f] = " << freq[f] << "\n\n";
-            if (freq[f] >= 1) {
-                res += freq[f];
+            auto itr = freq.find(f);
+            int fr = 0;
+            if (itr != freq.end()) {
+                fr = itr->second;
+            }
+
+            if (fr >= 1) {
+                res += fr;
             }
 
             freq[curr]++;
