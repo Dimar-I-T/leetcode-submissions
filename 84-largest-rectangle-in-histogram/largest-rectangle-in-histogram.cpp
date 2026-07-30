@@ -32,7 +32,6 @@ public:
     vector<vector<int>> lookup;
 
     void f(int l, int r, vector<int>& arr) {
-        //cout << "\n";
         if (l > r) {
             return;
         }
@@ -45,27 +44,19 @@ public:
         vector<pair<int, int>> nextLR;
         int prevIdx = l;
         int minVal = query(l, r, lookup);
-        //cout << "awal: " << l << " <-> " << r << "\n";
-        //cout << "min: " << minVal << "\n";
         vector<int> idxMin = idx[minVal];
         int n = idxMin.size();
         int i = 0;
-        //cout << "mulai dari kiri:\n";
         res = max(res, minVal * (r - l + 1));
-        //cout << "luas: " << res << "\n";
         while (i < n) {
             int curr = idxMin[i];
-            //cout << "curr: " << curr << "\n";
             if (curr == prevIdx) {
-                //cout << "sama!\n";
                 break;
             }
 
             if (curr > prevIdx) {
-                //cout << "lebih besar!\n";
                 nextLR.push_back({prevIdx, curr - 1});
                 prevIdx = curr;
-                //cout << "sekarang prevIdx: " << prevIdx << "\n";
                 break;
             }
 
@@ -74,10 +65,8 @@ public:
 
         int edge = r;
         i++;
-        //cout << "dari tengah:\n";
         for (; i < n; i++) {
             int curr = idxMin[i];
-            //cout << "curr: " << curr << "\n";
             if (curr == r) {
                 edge = r - 1;
                 break;
@@ -88,7 +77,6 @@ public:
             }
 
             if (prevIdx + 1 <= curr - 1) {
-                //cout << "push: " << prevIdx + 1 << " dan " << curr - 1 << "\n";
                 nextLR.push_back({prevIdx + 1, curr - 1});
             }
 
@@ -96,13 +84,6 @@ public:
         }
 
         nextLR.push_back({prevIdx + 1, edge});
-
-        //cout << "HASIL: next:\n";
-        for (pair<int, int> p : nextLR) {
-            //cout << "l: " << p.first << " r: " << p.second << "\n";
-        }
-
-        //cout << "MULAI MASUK:\n";
         for (pair<int, int> p : nextLR) {
             f(p.first, p.second, arr);
         }
