@@ -40,9 +40,7 @@ public:
                 }
 
                 if (sum == t) {
-                    vector<int> resSem = {nums[x], left, right};
-                    sort(resSem.begin(), resSem.end());
-                    res.push_back(resSem);
+                    res.push_back({nums[x], left, right});
                     prevL = left;
                     prevR = right;
                     l++;
