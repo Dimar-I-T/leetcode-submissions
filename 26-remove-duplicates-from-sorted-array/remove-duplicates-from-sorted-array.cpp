@@ -2,35 +2,25 @@ class Solution {
 public:
     // dimar's solution
     int removeDuplicates(vector<int>& nums) {
-        int n = nums.size(), awalDuplikat = 1, nilaiSama = 0, k = 0;
-        for (int x = 1; x < n; x++){
-            if (nums[x] == nums[x - 1]){
-                nilaiSama = nums[x];
+        int l = 1;
+        int n = nums.size();
+        int next = nums[0];
+        int k = 0;
+        for (int x = 1; x < n; x++) {
+            if (l >= n) {
                 break;
             }
 
-            awalDuplikat++;
-        }
-        
-        for (int x = awalDuplikat; x < n; x++){
-            if (nums[x] != nilaiSama){
-                nums[awalDuplikat] = nums[x];
-                awalDuplikat++;
-                nilaiSama = nums[x];
-            }else{
+            int curr = nums[x];
+            int prev = nums[x - 1];
+            if (prev != curr) {
+                next = curr;
+                nums[l] = next;
+                l++;
+                k++;
             }
         }
 
-        unordered_map<int, bool> sudah;
-        for (int x = 0; x < n; x++){
-            if (sudah[nums[x]]){
-                break;
-            }
-
-            sudah[nums[x]] = 1;
-            k++;
-        }
-
-        return k;
+        return k + 1;
     }
 };
