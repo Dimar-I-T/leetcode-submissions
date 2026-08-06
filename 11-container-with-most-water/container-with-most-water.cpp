@@ -4,19 +4,19 @@ public:
     int maxArea(vector<int>& height) {
         int n = height.size();
         int l = 0, r = n - 1;
-        int luas = 0;
+        int res = 0;
         while (l < r) {
-            if (luas < min(height[l], height[r]) * (r - l)){
-                luas = min(height[l], height[r]) * (r - l);
-            }
-
-            if (height[l] < height[r]){
-                l++;
-            }else{
+            int left = height[l];
+            int right = height[r];
+            int sumCurr = min(left, right) * (r - l);
+            res = max(res, sumCurr);
+            if (left >= right) {
                 r--;
+            } else {
+                l++;
             }
-        }    
+        }
 
-        return luas;
+        return res;
     }
 };
