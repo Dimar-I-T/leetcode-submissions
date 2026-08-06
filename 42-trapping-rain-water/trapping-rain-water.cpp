@@ -9,12 +9,6 @@ public:
             rightMax[x] = max(height[x], rightMax[x + 1]);
         }   
 
-        //cout << "rightMax:\n";
-        // for (int x : rightMax) {
-        //     //cout << x << " ";
-        // }
-
-        //cout << "\n";
         int l = 0;
         int left = height[l];
         if (n > 1) {
@@ -29,10 +23,7 @@ public:
                 continue;
             }
 
-            //cout << "left: " << left << "\n";
-            //cout << "curr: " << curr << "\n";
             sum += left - curr;
-            //cout << "+" << left - curr << "\n\n";
         }
 
         return sum;
