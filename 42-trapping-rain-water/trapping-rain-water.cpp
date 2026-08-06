@@ -2,22 +2,39 @@ class Solution {
 public:
     // dimar's solution
     int trap(vector<int>& height) {
-        int n = height.size(), hasil = 0;
-        vector<int> kiri(n), kanan(n);
-        kiri[0] = height[0];
-        for (int x = 1; x < n; x++){
-            kiri[x] = max(kiri[x - 1], height[x]);
+        int n = height.size();
+        vector<int> rightMax(n);
+        rightMax[n - 1] = height[n - 1];
+        for (int x = n - 2; x >= 0; x--) {
+            rightMax[x] = max(height[x], rightMax[x + 1]);
+        }   
+
+        //cout << "rightMax:\n";
+        // for (int x : rightMax) {
+        //     //cout << x << " ";
+        // }
+
+        //cout << "\n";
+        int l = 0;
+        int left = height[l];
+        if (n > 1) {
+            left = min(left, rightMax[l + 1]);
         }
 
-        kanan[n - 1] = height[n - 1];
-        for (int x = n - 2; x >= 0; x--){
-            kanan[x] = max(kanan[x + 1], height[x]);
+        int sum = 0;
+        for (int x = 1; x < n - 1; x++) {
+            int curr = height[x];
+            if (curr >= left) {
+                left = min(curr, rightMax[x + 1]);
+                continue;
+            }
+
+            //cout << "left: " << left << "\n";
+            //cout << "curr: " << curr << "\n";
+            sum += left - curr;
+            //cout << "+" << left - curr << "\n\n";
         }
 
-        for (int x = 0; x < n; x++){
-            hasil += min(kiri[x], kanan[x]) - height[x];
-        }
-
-        return hasil;
+        return sum;
     }
 };
