@@ -1,51 +1,46 @@
 class FreqStack {
 public:
-    int container[20001];
-    unordered_map<int, int> um;
-    int i = 0; 
+    int maks = 0;
+    unordered_map<int, int> valFreq;
+    unordered_map<int, stack<int>> freqVal;
     FreqStack() {
-        um.reserve(20001);
     }
     
     void push(int val) {
-        //cout << "PUSH\nsekarang v: ";
-        container[i] = val;
-        um[val]++;
-        i++;
-        for (int x = 0; x < i; x++) {
-            //cout << container[x] << " ";   
-        }
-
-        //cout << "\n\n";
-    }
-
-    void removeV(int idx) {
-        for (int x = idx; x < i - 1; x++) {
-            container[x] = container[x + 1];
-        }
+        int prevFreq = valFreq[val];
+        int nextFreq = prevFreq + 1;
+        freqVal[nextFreq].push(val);
+        valFreq[val]++;
+        maks = max(maks, nextFreq);
     }
     
     int pop() {
-        //cout << "POP\n";
-        int freq = 0;
-        int res = 0;
-        int idx = 0;
-        for (int x = i - 1; x >= 0; x--) {
-            int curr = container[x];
-            int freqCurr = um[curr];
-            if (freq < freqCurr) {
-                freq = freqCurr;
-                res = curr;
-                idx = x;
+        bool valid = emptyCheck();
+        if (!valid) {
+            return -1;
+        }
+        
+        int res = freqVal[maks].top();
+        freqVal[maks].pop();
+        int prevFreq = valFreq[res];
+        int nextFreq = prevFreq - 1;
+        valFreq[res]--;
+        emptyCheck();
+        return res;
+    }
+
+    bool emptyCheck() {
+        bool valid = 1;
+        while (freqVal[maks].empty()) {
+            if (maks <= 0) {
+                valid = 0;
+                break;
             }
+
+            maks--;
         }
 
-        //cout << "res = " << res << "\n";
-        //cout << "idx = " << idx << "\n\n";
-        um[res]--;
-        removeV(idx);
-        i--;
-        return res;
+        return valid;
     }
 };
 
