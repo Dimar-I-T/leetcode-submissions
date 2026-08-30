@@ -22,10 +22,7 @@ public:
                 break;
             } else {
                 if (currTimeStamp < t) {
-                    if (res.timestamp <= currTimeStamp) {
-                        res = curr;
-                    }
-
+                    res = curr;
                     l = m + 1;
                 } else {
                     r = m - 1;
