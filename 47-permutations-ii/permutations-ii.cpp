@@ -1,6 +1,6 @@
 class Solution {
 public:
-    void backtrack(vector<int> sek, vector<int>& nums, vector<vector<int>>& hasil, vector<bool> visited, unordered_map<int, bool> visitedNum) {
+    void backtrack(vector<int> sek, vector<int>& nums, vector<vector<int>>& hasil, vector<bool> visited) {
         int n = nums.size();
         if (n == sek.size()) {
             hasil.push_back(sek);
@@ -9,16 +9,15 @@ public:
 
         int seb = -100;
         for (int x = 0; x < n; x++) {
-            if (visited[x] || (visitedNum[nums[x]] && x > 0 && nums[x] == nums[x - 1])) {
+            if (visited[x] || (nums[x] == seb && x > 0 && nums[x] == nums[x - 1])) {
                 continue;
             }
 
-            visitedNum[seb] = 0;
+            seb = -100;
             visited[x] = 1;
             sek.push_back(nums[x]);
-            backtrack(sek, nums, hasil, visited, visitedNum);
+            backtrack(sek, nums, hasil, visited);
             visited[x] = 0;
-            visitedNum[nums[x]] = 1;
             seb = nums[x];
             sek.pop_back();
         }
@@ -27,8 +26,7 @@ public:
     vector<vector<int>> permuteUnique(vector<int>& nums) {
         sort(nums.begin(), nums.end());
         vector<vector<int>> hasil;
-        unordered_map<int, bool> um;
-        backtrack({}, nums, hasil, vector<bool>(nums.size()), um);
+        backtrack({}, nums, hasil, vector<bool>(nums.size()));
         return hasil;
     }
 };
