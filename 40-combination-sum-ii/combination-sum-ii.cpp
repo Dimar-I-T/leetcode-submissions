@@ -1,49 +1,31 @@
 class Solution {
 public:
-    // dimar's solution
-    int n, t;
-    vector<int> ca;
-    set<vector<int>> jawaban;
-    void f(int i, int jumlah, vector<int> v){
-        if (jumlah > t){
+
+    void backtrack(int i, int sisa, vector<int> sek, vector<int>& arr, vector<vector<int>>& hasil) {
+        if (sisa < 0) {
             return;
         }
 
-        if (i == n){
-            if (jumlah == t){
-                sort(v.begin(), v.end());
-                jawaban.insert(v);
-            }
-
+        if (sisa == 0) {
+            hasil.push_back(sek);
             return;
         }
 
-        bool bisa = 1;
-        for (auto x: v){
-            if (ca[i] == x){
-                bisa = 0;
-                break;
+        for (int x = i; x < arr.size(); x++) {
+            if (x > i && arr[x - 1] == arr[x]) {
+                continue;
             }
-        }
 
-        if (bisa){
-            f(i + 1, jumlah, v);
+            sek.push_back(arr[x]);
+            backtrack(x + 1, sisa - arr[x], sek, arr, hasil);
+            sek.pop_back();
         }
-
-        v.push_back(ca[i]);
-        f(i + 1, jumlah + ca[i], v);
     }
-    
-    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
-        ca = candidates;
-        n = ca.size();
-        t = target;
-        f(0, 0, {});
-        vector<vector<int>> hasil;
-        for (auto x: jawaban){
-            hasil.push_back(x);
-        }
 
+    vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+        sort(candidates.begin(), candidates.end());
+        vector<vector<int>> hasil;
+        backtrack(0, target, {}, candidates, hasil);
         return hasil;
     }
 };
