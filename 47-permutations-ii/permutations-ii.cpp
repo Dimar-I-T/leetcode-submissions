@@ -1,48 +1,34 @@
 class Solution {
 public:
-    // dimar's solution
-    set<vector<int>> hasil;
-    void permutasi(vector<int> kiri, vector<int> kanan) {
-        int n = kanan.size();
-        int m = kiri.size();
-        if (n == 0) {
+    void backtrack(vector<int> sek, vector<int>& nums, vector<vector<int>>& hasil, vector<bool> visited, unordered_map<int, bool> visitedNum) {
+        int n = nums.size();
+        if (n == sek.size()) {
+            hasil.push_back(sek);
             return;
         }
 
-        kiri.push_back(0);
-        vector<int> kiri1 = kiri;
+        int seb = -100;
         for (int x = 0; x < n; x++) {
-            kiri1[m] = kanan[x];
-            vector<int> kanan1;
-            for (int y = 0; y < n; y++) {
-                if (y == x) {
-                    continue;
-                }
-
-                kanan1.push_back(kanan[y]);
+            if (visited[x] || (visitedNum[nums[x]] && x > 0 && nums[x] == nums[x - 1])) {
+                continue;
             }
 
-            vector<int> perm;
-            for (int y : kiri1) {
-                perm.push_back(y);
-            }
-
-            for (int y : kanan1) {
-                perm.push_back(y);
-            }
-
-            hasil.insert(perm);
-            permutasi(kiri1, kanan1);
+            visitedNum[seb] = 0;
+            visited[x] = 1;
+            sek.push_back(nums[x]);
+            backtrack(sek, nums, hasil, visited, visitedNum);
+            visited[x] = 0;
+            visitedNum[nums[x]] = 1;
+            seb = nums[x];
+            sek.pop_back();
         }
     }
 
     vector<vector<int>> permuteUnique(vector<int>& nums) {
-        permutasi({}, nums);
-        vector<vector<int>> hasilV;
-        for (vector<int> v : hasil) {
-            hasilV.push_back(v);
-        }
-
-        return hasilV;
+        sort(nums.begin(), nums.end());
+        vector<vector<int>> hasil;
+        unordered_map<int, bool> um;
+        backtrack({}, nums, hasil, vector<bool>(nums.size()), um);
+        return hasil;
     }
 };
