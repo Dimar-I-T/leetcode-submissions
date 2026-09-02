@@ -1,54 +1,22 @@
 class Solution {
 public:
-    struct VectorHash {
-        size_t operator()(const std::vector<int>& v) const {
-            size_t seed = v.size();
-            for (int x : v) {
-                seed ^= std::hash<int>()(x) + 0x9e3779b9 + (seed << 6) + (seed >> 2);
-            }
-            return seed;
-        }
-    };
-
-    unordered_map<vector<int>, bool, VectorHash> visited;
-
-    void isi(vector<int> kiri, vector<int> kanan, vector<vector<int>>& hasil) {
-        if (!visited[kiri]) {
-            hasil.push_back(kiri);
-        }
-
-        visited[kiri] = 1;
-        int nKiri = kiri.size();
-        int nKanan = kanan.size();
-        for (int x = 0; x < nKanan; x++) {
-            vector<int> kiriNext = kiri;
-            vector<int> kananNext;
-            for (int y = 0; y < nKanan; y++) {
-                if (x == y) {
-                    continue;
-                }
-
-                kananNext.push_back(kanan[y]);
+    void backtrack(int i, vector<int> sek, vector<vector<int>>& hasil, vector<int>& nums) {
+        hasil.push_back(sek);
+        for (int i1 = i; i1 < nums.size(); i1++) {
+            if (i1 > i && nums[i1 - 1] == nums[i1]) {
+                continue;
             }
 
-            if (!kiri.empty()) {
-                if (kiri[nKiri - 1] <= kanan[x]) {
-                    kiriNext.push_back(kanan[x]);
-                } else {
-                    continue;
-                }
-            } else {
-                kiriNext.push_back(kanan[x]);
-            }
-
-            isi(kiriNext, kananNext, hasil);
+            sek.push_back(nums[i1]);
+            backtrack(i1 + 1, sek, hasil, nums);
+            sek.pop_back();
         }
     }
 
     vector<vector<int>> subsetsWithDup(vector<int>& nums) {
         sort(nums.begin(), nums.end());
         vector<vector<int>> hasil;
-        isi({}, nums, hasil);
+        backtrack(0, {}, hasil, nums);
         return hasil;
     }
 };
