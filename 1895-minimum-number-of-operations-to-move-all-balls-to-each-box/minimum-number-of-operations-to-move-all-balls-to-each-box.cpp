@@ -2,68 +2,53 @@ class Solution {
 public:
     vector<int> minOperations(string boxes) {
         int n = boxes.length();
-        if (n == 1) {
-            return {0};
-        }
-
-        vector<int> indexesOnesFromLeft;
-        vector<int> indexesOnesFromRight;
+        vector<pair<int, int>> v(n);
         for (int x = 0; x < n; x++) {
             if (boxes[x] == '1') {
-                indexesOnesFromLeft.push_back(x);
+                v[x].first = x;
+                v[x].second = 1;
             }
         }
+
+        vector<pair<int, int>> prefLeft(n);
+        prefLeft[0].first = v[0].first;
+        prefLeft[0].second = v[0].second;
+        for (int x = 1; x < n; x++) {
+            prefLeft[x].first = prefLeft[x - 1].first + v[x].first;
+            prefLeft[x].second = prefLeft[x - 1].second + v[x].second;
+        } 
+
+        vector<pair<int, int>> prefRight(n);
+        vector<pair<int, int>> v1(n);
+        for (int x = 0; x < n; x++) {
+            if (boxes[x] == '1') {
+                v1[x].first = n - x - 1;
+                v1[x].second = 1;
+            }
+        }
+
+        prefRight[n - 1].first = v1[n - 1].first;
+        prefRight[n - 1].second = v1[n - 1].second;
+        for (int x = n - 2; x >= 0; x--) {
+            prefRight[x].first = prefRight[x + 1].first + v1[x].first;
+            prefRight[x].second = prefRight[x + 1].second + v1[x].second;
+        } 
         
         vector<int> ans(n);
-        int n1 = indexesOnesFromLeft.size();
-        if (n1 == 0) {
-            return ans;
-        }
-
-        for (int x = n - 1; x >= 0; x--) {
-            if (boxes[x] == '1') {
-                indexesOnesFromRight.push_back(n - x - 1);
-            }
-        }
-
-        reverse(indexesOnesFromRight.begin(), indexesOnesFromRight.end());
-        vector<int> prefFromLeft(n1);
-        prefFromLeft[0] = indexesOnesFromLeft[0];
-        for (int x = 1; x < n1; x++) {
-            prefFromLeft[x] = prefFromLeft[x - 1] + indexesOnesFromLeft[x];
-        }
-
-        vector<int> prefFromRight(n1);
-        prefFromRight[n1 - 1] = indexesOnesFromRight[n1 - 1];
-        for (int x = n1 - 2; x >= 0; x--) {
-            prefFromRight[x] = prefFromRight[x + 1] + indexesOnesFromRight[x];
-        }
-
-        int res = 0;
         for (int x = 0; x < n; x++) {
-            auto itrLeftB = binary_search(indexesOnesFromLeft.begin(), indexesOnesFromLeft.end(), x);
-            auto itrLeft = upper_bound(indexesOnesFromLeft.begin(), indexesOnesFromLeft.end(), x);
-            int il = (itrLeft - indexesOnesFromLeft.begin()), iL = 0;
             int kiri = 0;
-            if (il > 0) {
-                kiri = prefFromLeft[min(il - 1, n1 - 1)];
+            if (x > 0) {
+                kiri = prefLeft[x - 1].first;
             }
 
-            int banyakElemenKiri = x * (n1 - il);
-
-            int lSum = (prefFromLeft[n1 - 1] - kiri) - banyakElemenKiri;
-            int xr = (n - x - 1);
-            auto itrRight = lower_bound(indexesOnesFromLeft.begin(), indexesOnesFromLeft.end(), x);
-            int ir = itrRight - indexesOnesFromLeft.begin();
-            int kanan = prefFromRight[min(ir, n1 - 1)];
-            if (ir == n1 && !itrLeftB) {
-                kanan = 0;
+            int kkiri = ((prefLeft[n - 1].first - kiri) - x * prefRight[x].second);
+            int b = 0;
+            if (x > 0) {
+                b = (n - x - 1) * prefLeft[x - 1].second;
             }
 
-            int banyakElemenKanan = xr * (ir);
-            int rSum = (prefFromRight[0] - kanan) - banyakElemenKanan;
-            res = (lSum + rSum);
-            ans[x] = res;
+            int kkanan = ((prefRight[0].first - prefRight[x].first) - b);
+            ans[x] = kkiri + kkanan;
         }
 
         return ans;
